@@ -200,10 +200,11 @@
 
   .gallery-head{max-width:56ch;}
   .gallery-head p{color:var(--ink-soft);font-size:16px;line-height:1.55;margin-top:12px;}
-  .gallery-grid{
-    margin-top:32px;
-    display:grid;grid-template-columns:repeat(4,1fr);gap:16px;
-  }
+  .gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Cambio a 3 columnas */
+  gap: 20px; /* Espacio entre fotos */
+}
   .gallery-tile{
     aspect-ratio:4/3;border-radius:16px;
     border:2px dashed rgba(28,36,48,0.18);
@@ -215,7 +216,12 @@
   /* When real photos are ready, replace a .gallery-tile with:
      <div class="gallery-tile filled"><img src="ruta-de-la-foto.jpg" alt="Descripción"></div> */
   .gallery-tile.filled{border:none;padding:0;overflow:hidden;}
-  .gallery-tile.filled img{width:100%;height:100%;object-fit:cover;}
+  .gallery-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top; /* Enfoca la parte superior para mostrar las caras */
+  }
 
   /* ============ RESPONSIVE ============ */
   @media (max-width:980px){
