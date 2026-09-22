@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Un Mundo por Descubrir | Aprender, comprender e incluir</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* ============ TOKENS ============ */
+  :root{
+    --cream:#fbfaf2;
+    --yellow:#fdd416;
+    --blue:#1674de;
+    --orange:#ffac3e;
+    --ink:#1c2430;
+    --ink-soft:#4c5866;
+    --white:#ffffff;
+
+    /* "Placard Next Compressed" is the brand's licensed display font and isn't
+       available on this environment, so it's declared first with a close,
+       freely-licensed condensed fallback (Oswald) so the layout keeps its
+       intended proportions if the real font file is later added. */
+    --font-display:"Placard Next Compressed","Oswald",sans-serif;
+    --font-body:"Nunito","Oswald",sans-serif;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--ink);
+    font-family:var(--font-body);
+    -webkit-font-smoothing:antialiased;
+  }
+  img{max-width:100%;display:block;}
+  a{text-decoration:none;color:inherit;}
+  button{font-family:inherit;cursor:pointer;}
+  .container{width:100%;max-width:1180px;margin:0 auto;padding:0 24px;}
+
+  h1,h2,h3,.display{
+    font-family:var(--font-display);
+    text-transform:uppercase;
+    letter-spacing:0.01em;
+    line-height:1.02;
+    color:var(--blue);
+    margin:0;
+    font-weight:600;
+  }
+
+  .page{display:none;}
+  .page.active{display:block;}
+
+  /* ============ HEADER ============ */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:var(--cream);
+    border-bottom:1px solid rgba(28,36,48,0.08);
+  }
+  .header-inner{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 24px;gap:24px;
+  }
+  .brand{display:flex;align-items:center;gap:12px;}
+  .brand img{height:52px;width:auto;border-radius:10px;}
+  .brand-name{font-family:var(--font-display);font-size:16px;line-height:1.1;color:var(--blue);text-transform:uppercase;letter-spacing:0.02em;}
+  .brand-name span{display:block;color:var(--orange);}
+
+  nav.main-nav{display:flex;gap:32px;}
+  nav.main-nav a{
+    font-family:var(--font-display);
+    text-transform:uppercase;font-size:15px;letter-spacing:0.03em;
+    color:var(--ink);padding:6px 2px;border-bottom:3px solid transparent;
+    transition:color .15s ease, border-color .15s ease;
+  }
+  nav.main-nav a:hover,nav.main-nav a.active{color:var(--blue);border-color:var(--yellow);}
+
+  .cta-btn{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--blue);color:var(--white);
+    padding:12px 22px;border-radius:999px;border:none;
+    font-family:var(--font-display);text-transform:uppercase;font-size:14px;letter-spacing:0.03em;
+    white-space:nowrap;
+  }
+  .cta-btn:hover{background:#0f5bc0;}
+
+  .menu-toggle{display:none;background:none;border:none;padding:6px;}
+  .menu-toggle span{display:block;width:26px;height:3px;background:var(--blue);margin:5px 0;border-radius:2px;}
+
+  /* ============ HERO ============ */
+  .hero{
+    padding:64px 0 56px;
+    position:relative;overflow:hidden;
+  }
+  .hero-grid{
+    display:grid;grid-template-columns:1.05fr 1fr;gap:48px;align-items:center;
+  }
+  .hero h1{font-size:clamp(40px,5.2vw,64px);}
+  .hero h1 .accent{color:var(--yellow);-webkit-text-stroke:1px var(--blue);}
+  .hero p{
+    margin-top:20px;font-size:18px;line-height:1.55;color:var(--ink-soft);
+    max-width:46ch;
+  }
+  .hero-illustration{position:relative;height:380px;display:flex;align-items:flex-end;justify-content:center;}
+  .blob{position:absolute;border-radius:58% 42% 63% 37% / 41% 47% 53% 59%;z-index:0;}
+  .blob.b1{width:220px;height:220px;background:var(--yellow);top:10px;left:10px;}
+  .blob.b2{width:260px;height:260px;background:var(--blue);bottom:-10px;right:0;}
+  .blob.b3{width:160px;height:160px;background:var(--orange);top:120px;right:130px;opacity:0.9;}
+  .kids-illustration{
+    position:relative;z-index:1;display:flex;align-items:flex-end;justify-content:center;
+  }
+  .kid-photo{height:340px;width:auto;object-fit:contain;filter:drop-shadow(0 12px 18px rgba(28,36,48,0.18));}
+  .kid-photo.samara{margin-right:-28px;}
+  .kid-photo.amiryan{height:360px;z-index:2;}
+  .kid-photo.pool{margin-left:-28px;}
+
+  /* ============ INFO GRID ============ */
+  .info-section{padding:12px 0 56px;}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+  .card{
+    background:var(--white);border-radius:20px;padding:26px 24px;
+    border:1px solid rgba(28,36,48,0.06);
+    display:flex;flex-direction:column;gap:14px;min-height:190px;
+    position:relative;
+  }
+  .icon-circle{
+    width:52px;height:52px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .icon-circle svg{width:26px;height:26px;}
+  .icon-circle.yellow{background:#fff3c4;}
+  .icon-circle.blue{background:#d9e9fd;}
+  .icon-circle.orange{background:#ffe4c2;}
+  .card h3{font-size:20px;color:var(--ink);text-transform:none;font-family:var(--font-body);font-weight:800;}
+  .card p{margin:0;color:var(--ink-soft);font-size:15px;line-height:1.45;flex:1;}
+  .arrow-btn{
+    width:38px;height:38px;border-radius:50%;border:none;
+    display:flex;align-items:center;justify-content:center;
+    align-self:flex-end;
+  }
+  .arrow-btn.yellow{background:var(--yellow);}
+  .arrow-btn.blue{background:var(--blue);}
+  .arrow-btn.orange{background:var(--orange);}
+  .arrow-btn svg{width:16px;height:16px;}
+  .arrow-btn.blue svg{stroke:#fff;}
+  .arrow-btn.yellow svg,.arrow-btn.orange svg{stroke:var(--ink);}
+
+  /* ============ CONOCENOS SECTION ============ */
+  .conocenos-section{padding:16px 0 60px;}
+  .conocenos-grid{display:grid;grid-template-columns:0.82fr 2fr;gap:36px;align-items:start;}
+  .conocenos-intro h2{font-size:clamp(30px,3.4vw,40px);}
+  .conocenos-intro p{margin-top:16px;color:var(--ink-soft);font-size:16px;line-height:1.55;max-width:36ch;}
+  .conocenos-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
+  .conocenos-cards .card{min-height:220px;cursor:pointer;}
+  .conocenos-cards .card:hover{outline:2px solid var(--yellow);outline-offset:0;}
+  .conocenos-cards .card:focus-visible{outline:2px solid var(--blue);}
+
+  /* ============ BANNER ============ */
+  .banner{
+    background:#fdf1cf;border-radius:0;padding:40px 0;margin:0 0 0;
+  }
+  .banner-inner{display:grid;grid-template-columns:1fr repeat(4,1fr);gap:28px;align-items:start;}
+  .banner-inner h2{font-size:26px;max-width:12ch;}
+  .banner-inner>p:first-of-type{display:none;}
+  .banner-intro{grid-column:1;}
+  .banner-intro p{margin-top:12px;color:var(--ink-soft);font-size:15px;line-height:1.5;}
+  .banner-item{display:flex;flex-direction:column;gap:10px;}
+  .banner-item svg{width:30px;height:30px;}
+  .banner-item h4{margin:0;font-family:var(--font-display);text-transform:uppercase;color:var(--ink);font-size:18px;}
+  .banner-item p{margin:0;color:var(--ink-soft);font-size:14px;line-height:1.45;}
+
+  /* ============ FOOTER ============ */
+  footer{padding:32px 0;border-top:1px solid rgba(28,36,48,0.08);}
+  .footer-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:18px;}
+  .footer-brand{display:flex;align-items:center;gap:12px;}
+  .footer-brand img{height:40px;border-radius:8px;}
+  .footer-tagline{color:var(--ink-soft);font-size:14px;}
+  .footer-nav{display:flex;gap:22px;}
+  .footer-nav a{font-size:14px;color:var(--ink-soft);}
+  .footer-nav a:hover{color:var(--blue);}
+  .social{display:flex;gap:14px;}
+  .social a{width:34px;height:34px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;}
+  .social svg{width:16px;height:16px;stroke:#fff;}
+
+  /* ============ SUBPAGES: bio + gallery ============ */
+  .subpage{padding:48px 0 72px;min-height:60vh;}
+  .back-link{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:var(--font-display);text-transform:uppercase;font-size:14px;
+    color:var(--blue);margin-bottom:28px;letter-spacing:0.03em;background:none;border:none;padding:0;
+  }
+  .back-link svg{width:16px;height:16px;}
+
+  .bio-layout{display:grid;grid-template-columns:280px 1fr;gap:40px;align-items:start;}
+  .bio-avatar{
+    width:100%;aspect-ratio:1/1;border-radius:24px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .bio-avatar svg{width:60%;height:60%;}
+  .bio-name{font-size:clamp(34px,4.5vw,52px);}
+  .bio-placeholder{
+    margin-top:20px;border:2px dashed rgba(22,116,222,0.35);border-radius:18px;
+    padding:26px 28px;background:var(--white);color:var(--ink-soft);font-size:15px;line-height:1.6;max-width:60ch;
+  }
+  .bio-placeholder strong{color:var(--blue);}
+
+  .gallery-head{max-width:56ch;}
+  .gallery-head p{color:var(--ink-soft);font-size:16px;line-height:1.55;margin-top:12px;}
+  .gallery-grid{
+    margin-top:32px;
+    display:grid;grid-template-columns:repeat(4,1fr);gap:16px;
+  }
+  .gallery-tile{
+    aspect-ratio:4/3;border-radius:16px;
+    border:2px dashed rgba(28,36,48,0.18);
+    background:var(--white);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+    color:var(--ink-soft);font-size:13px;
+  }
+  .gallery-tile svg{width:26px;height:26px;opacity:0.5;}
+  /* When real photos are ready, replace a .gallery-tile with:
+     <div class="gallery-tile filled"><img src="ruta-de-la-foto.jpg" alt="Descripción"></div> */
+  .gallery-tile.filled{border:none;padding:0;overflow:hidden;}
+  .gallery-tile.filled img{width:100%;height:100%;object-fit:cover;}
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width:980px){
+    nav.main-nav{display:none;}
+    .menu-toggle{display:block;}
+    .hero-grid{grid-template-columns:1fr;}
+    .hero-illustration{order:-1;height:260px;}
+    .kid-photo{height:230px;}
+    .kid-photo.amiryan{height:245px;}
+    .grid-4{grid-template-columns:repeat(2,1fr);}
+    .conocenos-grid{grid-template-columns:1fr;}
+    .conocenos-cards{grid-template-columns:repeat(2,1fr);}
+    .banner-inner{grid-template-columns:1fr 1fr;}
+    .bio-layout{grid-template-columns:1fr;}
+    .bio-avatar{max-width:220px;}
+    .gallery-grid{grid-template-columns:repeat(2,1fr);}
+  }
+  @media (max-width:560px){
+    .grid-4{grid-template-columns:1fr;}
+    .conocenos-cards{grid-template-columns:1fr;}
+    .banner-inner{grid-template-columns:1fr;}
+    .gallery-grid{grid-template-columns:1fr;}
+    .header-inner{flex-wrap:wrap;}
+    .cta-btn{font-size:12px;padding:10px 16px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner container">
+    <div class="brand">
+      <img src="logo-un-mundo.png" alt="Un Mundo por Descubrir">
+      <div class="brand-name">Un Mundo<span>por Descubrir</span></div>
+    </div>
+    <nav class="main-nav">
+      <a href="#" class="nav-link active" data-target="home">Inicio</a>
+      <a href="#" class="nav-link" data-target="home" data-scroll="info">Conoce</a>
+      <a href="#" class="nav-link" data-target="conocenos">Conócenos</a>
+      <a href="#" class="nav-link" data-target="galeria">Galería</a>
+    </nav>
+    <button class="cta-btn" data-target="home" data-scroll="info">
+      Explorar recursos
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </button>
+    <button class="menu-toggle" aria-label="Abrir menú" id="menuToggle"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<!-- ================= HOME ================= -->
+<main id="home" class="page active">
+
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <h1>Aprender,<br>comprender<br><span class="accent">e incluir</span></h1>
+        <p>Información, herramientas y recursos didácticos para crear una sociedad más consciente, respetuosa e inclusiva.</p>
+      </div>
+      <div class="hero-illustration">
+        <div class="blob b1"></div>
+        <div class="blob b2"></div>
+        <div class="blob b3"></div>
+        <div class="kids-illustration">
+          <img class="kid-photo samara" src="photos/samara.png" alt="Samara">
+          <img class="kid-photo amiryan" src="photos/amiryan.png" alt="Amiryan">
+          <img class="kid-photo pool" src="photos/pool.png" alt="Pool">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="info-section" id="info">
+    <div class="container grid-4">
+      <div class="card">
+        <div class="icon-circle yellow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#1674de" stroke-width="2"><path d="M12 21s-7-4.35-9.5-8.7C.5 8.6 2.6 5 6.2 5c2 0 3.4 1.1 4.3 2.3C11.4 6.1 12.8 5 14.8 5c3.6 0 5.7 3.6 3.7 7.3C19 16.65 12 21 12 21z"/></svg>
+        </div>
+        <h3>Síndrome de Down</h3>
+        <p>Conoce sus características, fortalezas y necesidades.</p>
+        <button class="arrow-btn yellow"><svg viewBox="0 0 24 24" fill="none" stroke="#1c2430" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </div>
+      <div class="card">
+        <div class="icon-circle blue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#1674de" stroke-width="2"><path d="M9.5 3a3.5 3.5 0 0 0-3.5 3.5 3.2 3.2 0 0 0-3 3.2A3.3 3.3 0 0 0 5 13a3.3 3.3 0 0 0 3 5h4V5.2A3.5 3.5 0 0 0 9.5 3z"/><path d="M14.5 3A3.5 3.5 0 0 1 18 6.5a3.2 3.2 0 0 1 3 3.2A3.3 3.3 0 0 1 19 13a3.3 3.3 0 0 1-3 5h-4V5.2A3.5 3.5 0 0 1 14.5 3z"/></svg>
+        </div>
+        <h3>Autismo / TEA</h3>
+        <p>Infórmate sobre el espectro autista, sus formas de vivir y comunicar.</p>
+        <button class="arrow-btn blue"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </div>
+      <div class="card">
+        <div class="icon-circle orange">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#1674de" stroke-width="2"><circle cx="12" cy="10" r="6"/><path d="M9 10a3 3 0 0 1 3-3"/><path d="M9 21l3-6 3 6"/></svg>
+        </div>
+        <h3>TDAH</h3>
+        <p>Entiende sus particularidades y potencia sus talentos.</p>
+        <button class="arrow-btn orange"><svg viewBox="0 0 24 24" fill="none" stroke="#1c2430" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </div>
+      <div class="card">
+        <div class="icon-circle blue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#1674de" stroke-width="2"><circle cx="8" cy="9" r="3.2"/><circle cx="16" cy="9" r="3.2"/><path d="M2.5 19c.6-3 2.8-5 5.5-5s4.9 2 5.5 5"/><path d="M10.5 19c.6-3 2.8-5 5.5-5s4.9 2 5.5 5"/></svg>
+        </div>
+        <h3>Discapacidad Intelectual</h3>
+        <p>Conoce, respeta y valora sus capacidades.</p>
+        <button class="arrow-btn blue"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONÓCENOS (reemplaza a "Herramientas educativas") ============ -->
+  <section class="conocenos-section">
+    <div class="container conocenos-grid">
+      <div class="conocenos-intro">
+        <h2>Conócenos</h2>
+        <p>Detrás de este proyecto hay historias reales. Conoce a los niños que inspiran Un Mundo por Descubrir y revisa los momentos que compartimos juntos.</p>
+      </div>
+      <div class="conocenos-cards">
+        <div class="card" data-target="bio-samara" tabindex="0" role="button">
+          <div class="icon-circle yellow" style="overflow:hidden;padding:0;">
+            <img src="photos/samara.png" alt="Samara" style="width:100%;height:100%;object-fit:cover;">
+          </div>
+          <h3>Samara</h3>
+          <p>Conoce su historia y lo que la hace única.</p>
+          <button class="arrow-btn yellow" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="#1c2430" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        </div>
+        <div class="card" data-target="bio-amiryan" tabindex="0" role="button">
+          <div class="icon-circle blue" style="overflow:hidden;padding:0;">
+            <img src="photos/amiryan.png" alt="Amiryan" style="width:100%;height:100%;object-fit:cover;">
+          </div>
+          <h3>Amiryan</h3>
+          <p>Descubre su historia y lo que lo hace único.</p>
+          <button class="arrow-btn blue" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        </div>
+        <div class="card" data-target="bio-pool" tabindex="0" role="button">
+          <div class="icon-circle orange" style="overflow:hidden;padding:0;">
+            <img src="photos/pool.png" alt="Pool" style="width:100%;height:100%;object-fit:cover;">
+          </div>
+          <h3>Pool</h3>
+          <p>Descubre su historia y lo que lo hace único.</p>
+          <button class="arrow-btn orange" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="#1c2430" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        </div>
+        <div class="card" data-target="galeria" tabindex="0" role="button">
+          <div class="icon-circle blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#1674de" stroke-width="2"><rect x="3" y="6" width="18" height="14" rx="2.5"/><path d="M8 6l1.6-2.5h4.8L16 6"/><circle cx="12" cy="13" r="3.5"/></svg>
+          </div>
+          <h3>Galería divertida</h3>
+          <p>Fotos de momentos especiales de los niños.</p>
+          <button class="arrow-btn blue" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="banner">
+    <div class="container banner-inner">
+      <div class="banner-intro">
+        <h2>La concientización también educa</h2>
+        <p>Pequeñas acciones generan grandes cambios.</p>
+      </div>
+      <div class="banner-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#1674de" stroke-width="2"><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/><circle cx="12" cy="12" r="5"/></svg>
+        <h4>Conocer</h4>
+        <p>Es el primer paso para derribar prejuicios.</p>
+      </div>
+      <div class="banner-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#1674de" stroke-width="2"><path d="M20.8 8.6a5.5 5.5 0 0 0-9.3-3.4L12 6l.5-.8A5.5 5.5 0 0 0 3.2 8.6c0 6.4 8.8 11 8.8 11s8.8-4.6 8.8-11z"/></svg>
+        <h4>Comprender</h4>
+        <p>Nos permite ver más allá de las diferencias.</p>
+      </div>
+      <div class="banner-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#1674de" stroke-width="2"><circle cx="8" cy="9" r="3.2"/><circle cx="16" cy="9" r="3.2"/><path d="M2.5 19c.6-3 2.8-5 5.5-5s4.9 2 5.5 5"/><path d="M10.5 19c.6-3 2.8-5 5.5-5s4.9 2 5.5 5"/></svg>
+        <h4>Acompañar</h4>
+        <p>Fortalece la confianza y el desarrollo.</p>
+      </div>
+      <div class="banner-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#1674de" stroke-width="2"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.5 6.8L12 16.9 5.8 20.4l1.5-6.8L2.2 9l6.9-.7z"/></svg>
+        <h4>Incluir</h4>
+        <p>Construye una sociedad más justa y humana.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ================= BIO PAGES ================= -->
+<main id="bio-samara" class="page subpage-wrap">
+  <div class="container subpage">
+    <button class="back-link" data-target="home" data-scroll="conocenos-section-anchor">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#1674de" stroke-width="2.4"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+      Volver a Conócenos
+    </button>
+    <div class="bio-layout">
+      <div class="bio-avatar" style="background:#fff3c4;overflow:hidden;">
+        <img src="photos/samara.png" alt="Samara" style="width:100%;height:100%;object-fit:cover;">
+      </div>
+      <div>
+        <h1 class="bio-name">Samara</h1>
+        <div class="bio-placeholder">
+          <strong>Biografía próximamente.</strong> Estamos preparando la historia de Samara: sus gustos, sus fortalezas y lo que la hace especial. Vuelve pronto para conocerla mejor.
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<main id="bio-amiryan" class="page subpage-wrap">
+  <div class="container subpage">
+    <button class="back-link" data-target="home" data-scroll="conocenos-section-anchor">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#1674de" stroke-width="2.4"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+      Volver a Conócenos
+    </button>
+    <div class="bio-layout">
+      <div class="bio-avatar" style="background:#d9e9fd;overflow:hidden;">
+        <img src="photos/amiryan.png" alt="Amiryan" style="width:100%;height:100%;object-fit:cover;">
+      </div>
+      <div>
+        <h1 class="bio-name">Amiryan</h1>
+        <div class="bio-placeholder">
+          <strong>Biografía próximamente.</strong> Estamos preparando la historia de Amiryan: sus gustos, sus fortalezas y lo que lo hace especial. Vuelve pronto para conocerlo mejor.
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<main id="bio-pool" class="page subpage-wrap">
+  <div class="container subpage">
+    <button class="back-link" data-target="home" data-scroll="conocenos-section-anchor">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#1674de" stroke-width="2.4"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+      Volver a Conócenos
+    </button>
+    <div class="bio-layout">
+      <div class="bio-avatar" style="background:#ffe4c2;overflow:hidden;">
+        <img src="photos/pool.png" alt="Pool" style="width:100%;height:100%;object-fit:cover;">
+      </div>
+      <div>
+        <h1 class="bio-name">Pool</h1>
+        <div class="bio-placeholder">
+          <strong>Biografía próximamente.</strong> Estamos preparando la historia de Pool: sus gustos, sus fortalezas y lo que lo hace especial. Vuelve pronto para conocerlo mejor.
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ================= GALERÍA ================= -->
+<main id="galeria" class="page subpage-wrap">
+  <div class="container subpage">
+    <button class="back-link" data-target="home" data-scroll="conocenos-section-anchor">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#1674de" stroke-width="2.4"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+      Volver a Conócenos
+    </button>
+    <div class="gallery-head">
+      <h1>Galería divertida</h1>
+      <p>Aquí irán las fotos de los momentos que compartimos con Samara, Amiryan y Pool. Envíanos las imágenes y las colocamos en cada espacio.</p>
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-tile"><svg viewBox="0 0 24 24" fill="none" stroke="#4c5866" stroke-width="1.6"><rect x="3" y="6" width="18" height="14" rx="2.5"/><path d="M8 6l1.6-2.5h4.8L16 6"/><circle cx="12" cy="13" r="3.5"/></svg>Foto próximamente</div>
+      <div class="gallery-tile"><svg viewBox="0 0 24 24" fill="none" stroke="#4c5866" stroke-width="1.6"><rect x="3" y="6" width="18" height="14" rx="2.5"/><path d="M8 6l1.6-2.5h4.8L16 6"/><circle cx="12" cy="13" r="3.5"/></svg>Foto próximamente</div>
+      <div class="gallery-tile"><svg viewBox="0 0 24 24" fill="none" stroke="#4c5866" stroke-width="1.6"><rect x="3" y="6" width="18" height="14" rx="2.5"/><path d="M8 6l1.6-2.5h4.8L16 6"/><circle cx="12" cy="13" r="3.5"/></svg>Foto próximamente</div>
+      <div class="gallery-tile"><svg viewBox="0 0 24 24" fill="none" stroke="#4c5866" stroke-width="1.6"><rect x="3" y="6" width="18" height="14" rx="2.5"/><path d="M8 6l1.6-2.5h4.8L16 6"/><circle cx="12" cy="13" r="3.5"/></svg>Foto próximamente</div>
+      <div class="gallery-tile"><svg viewBox="0 0 24 24" fill="none" stroke="#4c5866" stroke-width="1.6"><rect x="3" y="6" width="18" height="14" rx="2.5"/><path d="M8 6l1.6-2.5h4.8L16 6"/><circle cx="12" cy="13" r="3.5"/></svg>Foto próximamente</div>
+      <div class="gallery-tile"><svg viewBox="0 0 24 24" fill="none" stroke="#4c5866" stroke-width="1.6"><rect x="3" y="6" width="18" height="14" rx="2.5"/><path d="M8 6l1.6-2.5h4.8L16 6"/><circle cx="12" cy="13" r="3.5"/></svg>Foto próximamente</div>
+      <div class="gallery-tile"><svg viewBox="0 0 24 24" fill="none" stroke="#4c5866" stroke-width="1.6"><rect x="3" y="6" width="18" height="14" rx="2.5"/><path d="M8 6l1.6-2.5h4.8L16 6"/><circle cx="12" cy="13" r="3.5"/></svg>Foto próximamente</div>
+      <div class="gallery-tile"><svg viewBox="0 0 24 24" fill="none" stroke="#4c5866" stroke-width="1.6"><rect x="3" y="6" width="18" height="14" rx="2.5"/><path d="M8 6l1.6-2.5h4.8L16 6"/><circle cx="12" cy="13" r="3.5"/></svg>Foto próximamente</div>
+    </div>
+  </div>
+</main>
+
+<footer id="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <img src="logo-un-mundo.png" alt="Un Mundo por Descubrir">
+      <span class="footer-tagline">Juntos por una educación más inclusiva</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="#" data-target="home">Inicio</a>
+      <a href="#" data-target="home" data-scroll="info">Conoce</a>
+      <a href="#" data-target="conocenos">Conócenos</a>
+      <a href="#" data-target="galeria">Galería</a>
+    </nav>
+    <div class="social">
+      <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+      <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M14 9h3V5h-3a4 4 0 0 0-4 4v2H7v4h3v6h4v-6h3l1-4h-4V9a1 1 0 0 1 1-1z"/></svg></a>
+      <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="4"/><path d="M10 9.5l5 2.5-5 2.5z" fill="#fff" stroke="none"/></svg></a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const pages = document.querySelectorAll('.page');
+  const navLinks = document.querySelectorAll('.nav-link');
+
+  function showPage(id, scrollTarget){
+    pages.forEach(p => p.classList.remove('active'));
+    const target = document.getElementById(id);
+    if(target) target.classList.add('active');
+
+    navLinks.forEach(l => l.classList.remove('active'));
+    navLinks.forEach(l => { if(l.dataset.target === id) l.classList.add('active'); });
+
+    window.scrollTo({top:0, behavior:'instant' in window ? 'auto' : 'auto'});
+
+    if(scrollTarget){
+      requestAnimationFrame(() => {
+        const el = document.getElementById(scrollTarget) || document.querySelector('.' + scrollTarget);
+        if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+      });
+    }
+  }
+
+  document.querySelectorAll('[data-target]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      showPage(el.dataset.target, el.dataset.scroll);
+    });
+    el.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        showPage(el.dataset.target, el.dataset.scroll);
+      }
+    });
+  });
+
+  // mobile menu
+  const menuToggle = document.getElementById('menuToggle');
+  const mainNav = document.querySelector('.main-nav');
+  menuToggle.addEventListener('click', () => {
+    const isOpen = mainNav.style.display === 'flex';
+    mainNav.style.display = isOpen ? 'none' : 'flex';
+    mainNav.style.flexDirection = 'column';
+    mainNav.style.position = 'absolute';
+    mainNav.style.top = '72px';
+    mainNav.style.left = '0';
+    mainNav.style.right = '0';
+    mainNav.style.background = 'var(--cream)';
+    mainNav.style.padding = '18px 24px';
+    mainNav.style.gap = '16px';
+    mainNav.style.borderBottom = '1px solid rgba(28,36,48,0.08)';
+  });
+</script>
+
+</body>
+</html>
